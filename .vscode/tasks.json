@@ -1,0 +1,23 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build AVR Project (avrasm2)",
+            "type": "shell",
+            "command": "C:\\Program Files (x86)\\Atmel\\Studio\\7.0\\toolchain\\avr8\\avrassembler\\avrasm2.exe",
+            "args": [
+                "-fI",
+                "-I",
+                "C:\\Program Files (x86)\\Atmel\\Studio\\7.0\\packs\\atmel\\ATmega_DFP\\1.7.374\\avrasm\\inc",
+                "-o",
+                "${workspaceFolder}/vga-interrupt.hex",
+                "${workspaceFolder}/vga-interrupt.asm"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}
