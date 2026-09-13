@@ -10,8 +10,8 @@
                 "-I",
                 "C:\\Program Files (x86)\\Atmel\\Studio\\7.0\\packs\\atmel\\ATmega_DFP\\1.7.374\\avrasm\\inc",
                 "-o",
-                "${workspaceFolder}/vga-interrupt.hex",
-                "${workspaceFolder}/vga-interrupt.asm"
+                "${workspaceFolder}/vga-driver.hex",
+                "${workspaceFolder}/vga-driver.asm"
             ],
             "group": {
                 "kind": "build",
