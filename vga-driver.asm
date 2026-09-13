@@ -1,10 +1,9 @@
-
 ; ****************************************************************************************
-; **** LUCIDSCIENCE.COM - VGA GENERATOR SYNC TEST BY RADBRAD
+; **** LUCIDSCIENCE.COM - VGA GENERATOR IMAGE TEST BY RADBRAD
 ; ****************************************************************************************
 
 ; COMPILER SETTINGS
-#include "m328Pdef.inc"
+.INCLUDE "m328Pdef.inc"
 
 ; INTERRUPT VECTORS
 .org 0
@@ -59,9 +58,9 @@ ldi r16,(1<<OCIE1A)
 sts timsk1,r16
 
 ; SET TIMER1 INTERRUPT TIME A VALUE
-ldi r16,high(636)
+ldi r16,high(636) ;$$$
 sts ocr1ah,r16
-ldi r16,low(636)
+ldi r16,low(636) ;$$$
 sts ocr1al,r16
 
 ; RESET VARIABLES
@@ -73,16 +72,24 @@ st x+,r16
 st x+,r16
 st x+,r16
 
+; RESET ALL REGISTERS
+clr r0
+clr r16
+clr r17
+clr r18
+clr r19
+clr r20
+clr r21
+clr r22
+clr r26
+clr r27
+clr r28
+clr r29
+clr zl
+clr zh
+
 ; TURN ON GLOBAL INTERRUPTS
 sei
-
- 
-
-; ****************************************************************************************
-; **** RESET REGISTERS
-; ****************************************************************************************
-clr r19
-clr r22
 
  
 
@@ -92,19 +99,19 @@ clr r22
 main:
 
 ; LED FLASH TIMER
-inc r20
+inc r19
 brne ff
-inc r21
+inc r20
 ff:
 
 ; LED ON
-cpi r21,127
+cpi r20,127
 brne l1
 sbi portb,2
 l1:
 
 ; LED OFF
-cpi r21,0
+cpi r20,0
 brne l2
 cbi portb,2
 l2:
@@ -118,14 +125,18 @@ rjmp main
 ; ****************************************************************************************
 VIDEO:
 
+; -------------------------
 ; HORIZONTAL CLOCK TIMING
+; -------------------------
 ;HFP:12 (0-11)
 ;HSP:76 (12-87)
 ;HBP:36 (88-123)
 ;HPX:512 (124-635)
 ;TOT:636
 
+; -------------------------
 ; VERTICAL LINE TIMING
+; -------------------------
 ;VSP:2 (0-1)
 ;VBP:32 (2-33)
 ;VLN:480 (34-513)
@@ -228,12 +239,18 @@ s6:
 nop ;1
 nop ;1
 nop ;1
+
+; RESET IMAGE DATA ADDRESS
+cpi r18,0 ;1
+brne i8 ;1/2
+ldi zl,low(2*pic) ;1
+ldi zh,high(2*pic) ;1
+rjmp i9 ;2
+i8:
 nop ;1
 nop ;1
 nop ;1
-nop ;1
-nop ;1
-nop ;1
+i9:
 
 ; SAVE REGISTERS TO SRAM
 ; TIME = 12 CYCLES
@@ -276,549 +293,277 @@ nop ;1
 nop ;1
 nop ;1
 nop ;1
-nop ;1
 
-; GENERATE 16X15 PALETTE BLOCKS
-cpi r22,30 ;1
-brne PAL1 ;1/2
-clr r22 ;1
-PAL1:
-brne PAL2 ;1/2
-subi r19,240 ;1
-PAL2:
-inc r22 ;1
+; DOUBLE VERTICAL LINES
+ldi r22,128 ;1
+inc r21 ;1
+sbrs r21,0 ;1/2
+sub zl,r22 ;1
+sbrs r21,0 ;1/2
+sbc zh,r0 ;1
+
+ 
 
 ; ****************************************************************************************
-; **** HORIZONTAL ACTIVE LINE = 512 CYCLES / 2 = 256 PIXELS
+; **** HORIZONTAL ACTIVE LINE = 512 CYCLES / 4 = 128 PIXELS
 ; ****************************************************************************************
 
-out portc,r19 ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-inc r19 ;1
-
-out portc,r19 ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-inc r19 ;1
-
-out portc,r19 ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-inc r19 ;1
-
-out portc,r19 ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-inc r19 ;1
-
-out portc,r19 ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-inc r19 ;1
-
-out portc,r19 ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-inc r19 ;1
-
-out portc,r19 ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-inc r19 ;1
-
-out portc,r19 ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-inc r19 ;1
-
-out portc,r19 ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-inc r19 ;1
-
-out portc,r19 ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-inc r19 ;1
-
-out portc,r19 ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-inc r19 ;1
-
-out portc,r19 ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-inc r19 ;1
-
-out portc,r19 ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-inc r19 ;1
-
-out portc,r19 ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-inc r19 ;1
-
-out portc,r19 ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-inc r19 ;1
-
-out portc,r19 ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-nop ;1
-subi r19,15 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
+lpm r16,z+ ;3
+out portc,r16 ;1
 
 ; HORIZONTAL BLANKING
 clr r16 ;1
@@ -833,3 +578,10 @@ out sreg,r16 ;1
 
 ; RETURN FROM INTERRUPT
 reti ;4
+
+ 
+; ****************************************************************************************
+; **** 128 x 240 RRGGBBII IMAGE DATA
+; ****************************************************************************************
+PIC:
+.INCLUDE "image-tut-data.asm"
